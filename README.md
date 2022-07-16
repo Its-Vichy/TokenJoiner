@@ -1,9 +1,11 @@
 Made for all skid who cant copy requests kinda gay
 
 ```py
-import httpx, itertools
+import httpx, itertools, threading, time
 
 __proxies__, __tokens__ = itertools.cycle(open('./proxies.txt', 'r+').read().splitlines()), itertools.cycle(open('./tokens.txt', 'r+').read().splitlines())
+__max_thread__ = 50
+__invite_code__ = "uwu"
 
 def join(token, invite):
     r = httpx.post(f'https://discord.com/api/v9/invites/{invite}', proxies='http://'+next(__proxies__), headers={
@@ -31,5 +33,8 @@ def join(token, invite):
     print(r)
 
 for token in __tokens__:
-    join(token, 'M9FfVcTg')
+    while threading.active_count() >= __max_thread__:
+        time.sleep(1)
+
+    threading.Thread(target=join, args=[token, __invite_code__]).start()
 ```
